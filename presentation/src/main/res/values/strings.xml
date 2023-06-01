@@ -1,0 +1,4 @@
+<resources>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="title_activity_main_screen">MainScreenActivity</string>
+</resources>
