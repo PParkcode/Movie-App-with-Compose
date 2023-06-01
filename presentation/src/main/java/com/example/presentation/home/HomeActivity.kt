@@ -34,6 +34,11 @@ fun HomeScreen() {
 
 }
 
+@Composable
+fun UpperView() {
+
+}
+
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
