@@ -1,6 +1,8 @@
 package com.example.composemovie
 
+import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +13,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.composemovie.ui.theme.ComposeMovieTheme
+import com.example.presentation.main.MainScreen
+import com.example.presentation.main.MainScreenActivity
+import dagger.hilt.android.AndroidEntryPoint
+import java.lang.Exception
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +30,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    Log.d("Main","메인 액티비티 실행")
+                    MainScreen()
+
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.example.presentation.main
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +26,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.presentation.home.HomeScreen
 import com.example.presentation.main.ui.theme.ComposeMovieTheme
 import com.example.presentation.navigation.NavBarItem
 import com.example.presentation.navigation.NavRoutes
@@ -39,6 +41,7 @@ class MainScreenActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    Log.d("Main","메인스크린 액티비티 실행")
                     MainScreen()
                 }
             }
@@ -46,9 +49,12 @@ class MainScreenActivity : ComponentActivity() {
     }
 }
 
+
+
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
+    Log.d("Main","MainScreen() 실행")
     val navController = rememberNavController()
 
     Scaffold(
@@ -65,6 +71,7 @@ fun NavigationHost(navController: NavHostController) {
     ) {
         composable(NavRoutes.Home.route) {
             // 각 목적지 컴포저블 호출
+            HomeScreen()
         }
         composable(NavRoutes.Filter.route) {
 
