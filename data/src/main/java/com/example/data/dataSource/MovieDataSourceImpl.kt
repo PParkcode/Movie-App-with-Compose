@@ -13,4 +13,16 @@ class MovieDataSourceImpl @Inject constructor(
 
         return client.getPopularMovie().results
     }
+
+    override suspend fun getNowPlaying(): List<MovieData> {
+        return client.getNowPlaying().results
+    }
+
+    override suspend fun getUpComing(): List<MovieData> {
+        return client.getUpComing().results
+    }
+
+    override suspend fun getTopRated(): List<MovieData> {
+        return client.getTopRated().results
+    }
 }

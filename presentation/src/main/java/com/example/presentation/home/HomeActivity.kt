@@ -71,18 +71,30 @@ fun HomeScreen( modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltVi
     LaunchedEffect(key1 = Unit  ) {
         coroutineScope.launch(Dispatchers.IO) {
             viewModel.getPopularMovie()
+            viewModel.getNowPlaying()
+            viewModel.getUpComing()
+            viewModel.getTopRated()
         }
     }
 
 
-    Column {
+    LazyColumn {
 
-        UpScreen(modifier =Modifier.weight(0.4f, fill =true))
-        DownScreen(
-            modifier= Modifier.weight(0.6f,fill = true),
-            itemList = viewModel.popularMovieList
-        )
-        
+        item {
+            UpScreen(
+                Modifier
+                    .fillMaxWidth()
+                    .height(400.dp))
+        }
+        item {
+            DownScreen(
+                //modifier= Modifier.weight(0.4f,fill = true),
+                popularList = viewModel.popularMovieList,
+                nowPlayingList = viewModel.nowPayingMovies,
+                upComingList = viewModel.upComingMovies,
+                topRatedList = viewModel.topRatedMovies
+            )
+        }
     }
 }
 @Preview(showBackground = true)
@@ -99,13 +111,25 @@ fun UpScreen(modifier: Modifier = Modifier) {
             color = Color.White,
             modifier = Modifier.padding(20.dp)
         )
-
-
     }
 }
 
 @Composable
-fun DownScreen(modifier:Modifier = Modifier , itemList: List<MovieCover>) {
+fun DownScreen(modifier:Modifier = Modifier ,
+               popularList: List<MovieCover>,
+               nowPlayingList: List<MovieCover>,
+               upComingList:List<MovieCover>,
+               topRatedList:List<MovieCover>
+) {
+    MovieList("요즘 핫한 영화",modifier,popularList)
+    MovieList("높은 평점을 받은 작품들",modifier,topRatedList)
+    MovieList("현재 상영하는 작품들",modifier,nowPlayingList)
+    MovieList("개봉 예정 작품들",modifier,upComingList)
+    Spacer(modifier = Modifier.size(100.dp))
+}
+@Composable
+fun MovieList(text:String,modifier: Modifier = Modifier, itemList:List<MovieCover>) {
+
     Column(
         modifier
             .then(modifier)
@@ -113,13 +137,14 @@ fun DownScreen(modifier:Modifier = Modifier , itemList: List<MovieCover>) {
             .then(modifier)
             .padding(start = 10.dp, top = 10.dp)) {
         Text(
-            text = "요즘 핫한 영화",
+            text = text,
             fontSize= 22.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyRow(horizontalArrangement = Arrangement.SpaceEvenly){
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)){
+
             items(itemList) {movie ->
-                MovieItem(movie.title,movie.posterUrl,modifier.size(width = 100.dp, height = 150.dp))
+                MovieItem(movie.title,movie.posterUrl,modifier.size(width = 120.dp, height = 180.dp))
             }
         }
 
@@ -134,25 +159,22 @@ fun MovieItem(title:String = "Sample",
               url:String = "https://en.pimg.jp/047/504/268/1/47504268.jpg",
               modifier: Modifier = Modifier) {
     Card(
-        modifier = Modifier.then(modifier).fillMaxSize().padding(top=5.dp).clickable { onClickMovie(title,url) },
+        modifier = Modifier
+            .then(modifier)
+            .fillMaxSize()
+            .padding(top = 5.dp)
+            .clickable { onClickMovie(title, url) },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp),
 
 
     ) {
-        Column {
-            AsyncImage(
-                model = "https://image.tmdb.org/t/p/w500"+url,
-                contentDescription = null,
-                Modifier.fillMaxWidth()
-            )
-            Text(
-                text = title,
-                Modifier.padding(top=4.dp),
-                fontSize = 12.sp,
-                )
-        }
+        AsyncImage(
+            model = "https://image.tmdb.org/t/p/w500"+url,
+            contentDescription = null,
+            Modifier.fillMaxSize()
+        )
     }
 
 }
