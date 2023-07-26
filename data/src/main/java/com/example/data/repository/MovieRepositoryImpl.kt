@@ -35,9 +35,18 @@ internal class MovieRepositoryImpl  @Inject constructor(
         return toMovieCover(movieList)
     }
 
+    override suspend fun getSearchResult(keyword:String): List<MovieCover> {
+        var movieList = dataSource.getSearchResult(keyword)
+        return toMovieCover(movieList)
+    }
+
+
+
     private fun toMovieCover(movieList: List<MovieData>):List<MovieCover> {
         val movieCoverList = movieList.map { it ->
             toCover(it.title,it.poster_path,it.vote_average.toString())}
         return movieCoverList
     }
+
+
 }

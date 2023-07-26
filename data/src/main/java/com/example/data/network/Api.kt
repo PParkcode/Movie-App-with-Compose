@@ -3,6 +3,7 @@ package com.example.data.network
 import com.example.data.model.MovieDataList
 import com.example.data.model.MovieResponse
 import retrofit2.http.GET
+import retrofit2.http.Query
 
 const val MY_KEY = "78f09933ae6d289319bd8eeccafacf23"
 const val LANG = "ko-KR"
@@ -25,4 +26,7 @@ interface Api {
 
     @GET("movie/top_rated?language=$LANG&page=1region=KR&api_key=$MY_KEY")
     suspend fun getTopRated(): MovieResponse
+
+    @GET("search/movie?language=$LANG&api_key=$MY_KEY")
+    suspend fun getSearchResult(@Query("query") query : String):MovieResponse
 }

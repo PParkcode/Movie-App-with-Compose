@@ -12,4 +12,6 @@ interface MovieDataSource {
     suspend fun getUpComing(): List<MovieData>
 
     suspend fun getTopRated(): List<MovieData>
+
+    suspend fun getSearchResult(keyword:String):List<MovieData>
 }

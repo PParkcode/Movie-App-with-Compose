@@ -156,7 +156,7 @@ fun MovieList(text:String,modifier: Modifier = Modifier, itemList:List<MovieCove
 @Preview(showBackground = true)
 @Composable
 fun MovieItem(title:String = "Sample",
-              url:String = "https://en.pimg.jp/047/504/268/1/47504268.jpg",
+              url:String = "",
               modifier: Modifier = Modifier) {
     Card(
         modifier = Modifier
@@ -185,6 +185,8 @@ fun onClickMovie(title: String,url: String) {
 
 
 }
+
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {

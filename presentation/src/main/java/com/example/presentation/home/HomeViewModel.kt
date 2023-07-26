@@ -1,5 +1,6 @@
 package com.example.presentation.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +16,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 
+@SuppressLint("MutableCollectionMutableState")
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val getPopularMovieUseCase: GetPopularMovieUseCase,

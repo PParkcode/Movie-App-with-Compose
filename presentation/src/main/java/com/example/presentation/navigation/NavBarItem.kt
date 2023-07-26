@@ -22,7 +22,7 @@ object NavBarItem {
         BarItem(
             title ="Search",
             image = Icons.Filled.Search,
-            route =" search"
+            route ="search"
         ),
         BarItem(
             title = "My",

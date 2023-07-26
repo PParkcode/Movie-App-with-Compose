@@ -25,4 +25,8 @@ class MovieDataSourceImpl @Inject constructor(
     override suspend fun getTopRated(): List<MovieData> {
         return client.getTopRated().results
     }
+
+    override suspend fun getSearchResult(keyword:String): List<MovieData> {
+        return client.getSearchResult(keyword).results
+    }
 }
