@@ -29,4 +29,8 @@ class MovieDataSourceImpl @Inject constructor(
     override suspend fun getSearchResult(keyword:String): List<MovieData> {
         return client.getSearchResult(keyword).results
     }
+
+    override suspend fun getFilterMovies(withGenres:String, Stars:String, withoutGenres:String): List<MovieData> {
+        return client.getFilterMovies(withGenres, Stars, withoutGenres).results
+    }
 }

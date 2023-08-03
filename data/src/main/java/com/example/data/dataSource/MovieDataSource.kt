@@ -14,4 +14,6 @@ interface MovieDataSource {
     suspend fun getTopRated(): List<MovieData>
 
     suspend fun getSearchResult(keyword:String):List<MovieData>
+
+    suspend fun getFilterMovies(withGenres:String, Stars:String, withoutGenres:String):List<MovieData>
 }

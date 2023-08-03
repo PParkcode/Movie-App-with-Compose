@@ -14,4 +14,6 @@ interface MovieRepository {
     suspend fun getTopRated(): List<MovieCover>
 
     suspend fun getSearchResult(keyword:String): List<MovieCover>
+
+    suspend fun getFilterMovies(withGenres:String, Stars:String, withoutGenres:String): List<MovieCover>
 }

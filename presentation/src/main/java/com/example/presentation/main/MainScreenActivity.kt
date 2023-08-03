@@ -27,6 +27,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.presentation.filter.BackDropScreen
+import com.example.presentation.filter.SetFilter
 import com.example.presentation.home.HomeScreen
 import com.example.presentation.main.ui.theme.ComposeMovieTheme
 import com.example.presentation.navigation.NavBarItem
@@ -76,7 +77,7 @@ fun NavigationHost(navController: NavHostController) {
             HomeScreen()
         }
         composable(NavRoutes.Filter.route) {
-            BackDropScreen()
+            SetFilter()
         }
         composable(NavRoutes.Search.route) {
             SearchScreenSetUp()

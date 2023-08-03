@@ -31,4 +31,7 @@ class GenreHash {
         }
         return list.toList()
     }
+    fun getValue(key:String): String {
+        return genreMap[key].toString()
+    }
 }

@@ -29,4 +29,11 @@ interface Api {
 
     @GET("search/movie?language=$LANG&api_key=$MY_KEY")
     suspend fun getSearchResult(@Query("query") query : String):MovieResponse
+
+    @GET("discover/movie?include_adult=false&language=$LANG&page=1&sort_by=popularity.desc&api_key=$MY_KEY")
+    suspend fun getFilterMovies(
+        @Query("with_genres") with_genres: String,
+        @Query("vote_average.gte") stars:String,
+        @Query("without_genres") without_genres:String
+    ):MovieResponse
 }

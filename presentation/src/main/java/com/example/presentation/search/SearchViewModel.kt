@@ -27,7 +27,6 @@ class SearchViewModel @Inject constructor(
         Log.d("park","SearchMovies시작")
         try {
             movieList = getSearchResultUseCase.invoke(keyword).toMutableList()
-            Log.d("park", movieList.toString())
 
         } catch (e:Exception) {
             Log.d("park","에러 발생 ${e.toString()}")

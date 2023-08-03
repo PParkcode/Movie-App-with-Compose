@@ -40,11 +40,22 @@ internal class MovieRepositoryImpl  @Inject constructor(
         return toMovieCover(movieList)
     }
 
+    override suspend fun getFilterMovies(withGenres:String, Stars:String, withoutGenres:String): List<MovieCover> {
+        val movieList = dataSource.getFilterMovies(withGenres, Stars, withoutGenres)
+        return toMovieCover(movieList)
+    }
+
 
 
     private fun toMovieCover(movieList: List<MovieData>):List<MovieCover> {
         val movieCoverList = movieList.map { it ->
-            toCover(it.title,it.poster_path,it.vote_average.toString())}
+            if(it.poster_path == null) {
+                toCover(it.title,"",it.vote_average.toString())
+            } else {
+                toCover(it.title,it.poster_path,it.vote_average.toString())
+            }
+
+        }
         return movieCoverList
     }
 

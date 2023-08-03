@@ -103,8 +103,6 @@ fun SearchMainScreen(
             viewModel.searchMovies(text)
         }
 
-
-
     }
 
     Column{
@@ -135,7 +133,7 @@ fun InputArea( textState: String,
 @Composable
 fun ResultArea(movieList:List<MovieCover>) {
     if(movieList.isEmpty()) {
-
+        //TODO
     }
     else {
         LazyVerticalGrid(
@@ -144,7 +142,6 @@ fun ResultArea(movieList:List<MovieCover>) {
         ) {
             items(movieList) {movie->
                 MovieItem(movie.title,movie.posterUrl)
-
             }
         }
     }
@@ -166,7 +163,6 @@ fun MovieItem(title:String = "Sample",
         elevation = CardDefaults.cardElevation(
             defaultElevation = 5.dp),
 
-
         ) {
         AsyncImage(
             model = "https://image.tmdb.org/t/p/w500"+url,
@@ -174,7 +170,6 @@ fun MovieItem(title:String = "Sample",
             Modifier.fillMaxSize()
         )
     }
-
 }
 
 @Preview(showBackground = true)

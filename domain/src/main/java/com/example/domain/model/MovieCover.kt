@@ -5,3 +5,5 @@ data class MovieCover(
     val posterUrl:String="",
     val star:String=""
 )
+
+
