@@ -1,7 +1,7 @@
 package com.example.data.di
 
-import com.example.data.dataSource.MovieDataSource
-import com.example.data.dataSource.MovieDataSourceImpl
+import com.example.data.dataSource.remote.MovieDataSource
+import com.example.data.dataSource.remote.MovieDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -14,6 +14,6 @@ internal abstract class DataSourceModule {
 
     @Binds
     abstract fun bindDataSource(
-        dataSource:MovieDataSourceImpl
-    ):MovieDataSource
+        dataSource: MovieDataSourceImpl
+    ): MovieDataSource
 }

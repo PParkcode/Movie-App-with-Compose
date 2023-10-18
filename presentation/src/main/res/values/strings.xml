@@ -3,4 +3,6 @@
     <string name="title_activity_main_screen">MainScreenActivity</string>
     <string name="title_activity_filter">FilterActivity</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="title_activity_detail">DetailActivity</string>
+    <string name="title_activity_my_page">MyPageActivity</string>
 </resources>

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
@@ -45,7 +46,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.domain.model.MovieCover
-import com.example.presentation.home.onClickMovie
+import com.example.presentation.home.MovieItem
+
 import com.example.presentation.search.ui.theme.ComposeMovieTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -59,8 +61,7 @@ class SearchActivity : ComponentActivity() {
             ComposeMovieTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
 
                 }
@@ -70,9 +71,12 @@ class SearchActivity : ComponentActivity() {
 }
 
 @Composable
-fun SearchScreenSetUp(viewModel: SearchViewModel = hiltViewModel()) {
+fun SearchScreenSetUp(
+    navigateToDetail: (Int) -> Unit, viewModel: SearchViewModel = hiltViewModel()
+) {
 
     SearchMainScreen(
+        navigateToDetail = { navigateToDetail(it) },
         keyword = viewModel.keyword,
         result = viewModel.movieList,
         viewModel = viewModel
@@ -81,11 +85,13 @@ fun SearchScreenSetUp(viewModel: SearchViewModel = hiltViewModel()) {
     )
 
 }
+
 @Composable
 fun SearchMainScreen(
-    keyword:String,
-    result:List<MovieCover>,
-    viewModel:SearchViewModel
+    navigateToDetail: (Int) -> Unit,
+    keyword: String,
+    result: List<MovieCover>,
+    viewModel: SearchViewModel
     //searchMovies:(String)->Unit
 
 ) {
@@ -94,7 +100,7 @@ fun SearchMainScreen(
 
     var textState by remember { mutableStateOf("") }
 
-    val onTextChange = { text:String ->
+    val onTextChange = { text: String ->
         textState = text
 
 
@@ -105,43 +111,43 @@ fun SearchMainScreen(
 
     }
 
-    Column{
-        InputArea(textState = textState, onTextChange =  { onTextChange(it) } , modifier = Modifier)
-        ResultArea(viewModel.movieList)
+    Column {
+        InputArea(textState = textState, onTextChange = { onTextChange(it) }, modifier = Modifier)
+        ResultArea(navigateToDetail = { navigateToDetail(it) }, viewModel.movieList)
     }
 }
 
 @Composable
-fun InputArea( textState: String,
-               onTextChange: (String) -> Unit,
-               modifier: Modifier = Modifier) {
+fun InputArea(
+    textState: String, onTextChange: (String) -> Unit, modifier: Modifier = Modifier
+) {
 
     OutlinedTextField(
-        value =  textState,
+        value = textState,
         onValueChange = { onTextChange(it) },
         singleLine = true,
-        label = {Text("검색어를 입력해주세요")},
-        textStyle = TextStyle(fontWeight = FontWeight.Bold,
-            fontSize = 30.sp),
-        modifier = Modifier.padding(10.dp),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+        label = { Text("검색어를 입력해주세요") },
+        textStyle = TextStyle(
+            fontWeight = FontWeight.Normal, fontSize = 18.sp
+        ),
+        modifier = Modifier.
+            fillMaxWidth()
+            .padding(10.dp),
+        //keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
     )
-
-
 }
 
 @Composable
-fun ResultArea(movieList:List<MovieCover>) {
-    if(movieList.isEmpty()) {
+fun ResultArea(navigateToDetail: (Int) -> Unit, movieList: List<MovieCover>) {
+    if (movieList.isEmpty()) {
         //TODO
-    }
-    else {
+    } else {
         LazyVerticalGrid(
-            columns  = GridCells.Adaptive(75.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            columns = GridCells.Adaptive(75.dp), horizontalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(start = 10.dp, end = 10.dp)
         ) {
-            items(movieList) {movie->
-                MovieItem(movie.title,movie.posterUrl)
+            items(movieList) { movie ->
+                MovieItem({ navigateToDetail(it) }, movie.id, movie.posterUrl)
             }
         }
     }
@@ -149,32 +155,8 @@ fun ResultArea(movieList:List<MovieCover>) {
 }
 
 
-@Composable
-fun MovieItem(title:String = "Sample",
-              url:String = "",
-              modifier: Modifier = Modifier) {
-    Card(
-        modifier = Modifier
-            .then(modifier)
-            .size(width = 75.dp,height=140.dp)
-            .padding(top = 5.dp)
-            .clickable { onClickMovie(title, url) },
-        shape = RoundedCornerShape(15.dp),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp),
-
-        ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w500"+url,
-            contentDescription = null,
-            Modifier.fillMaxSize()
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview4() {
-    ComposeMovieTheme {
-    }
+    ComposeMovieTheme {}
 }

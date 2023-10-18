@@ -6,6 +6,16 @@
 
     <application>
         <activity
+            android:name=".myPage.MyPageActivity"
+            android:exported="false"
+            android:label="@string/title_activity_my_page"
+            android:theme="@style/Theme.ComposeMovie" />
+        <activity
+            android:name=".detail.DetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_detail"
+            android:theme="@style/Theme.ComposeMovie" />
+        <activity
             android:name=".search.SearchActivity"
             android:exported="false"
             android:label="@string/title_activity_search"

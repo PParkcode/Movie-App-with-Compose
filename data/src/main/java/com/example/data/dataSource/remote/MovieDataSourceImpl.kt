@@ -1,6 +1,9 @@
-package com.example.data.dataSource
+package com.example.data.dataSource.remote
 
+import android.util.Log
+import com.example.data.dataSource.remote.MovieDataSource
 import com.example.data.model.MovieData
+import com.example.data.model.MovieDetailResponse
 import com.example.data.network.Api
 import javax.inject.Inject
 
@@ -32,5 +35,18 @@ class MovieDataSourceImpl @Inject constructor(
 
     override suspend fun getFilterMovies(withGenres:String, Stars:String, withoutGenres:String): List<MovieData> {
         return client.getFilterMovies(withGenres, Stars, withoutGenres).results
+    }
+
+    override suspend fun getDetailMovieData(id: Int): MovieDetailResponse {
+        Log.d("park","id: $id")
+        return client.getDetailMovieData(id)
+    }
+
+    override suspend fun getRecommendations(id: Int): List<MovieData> {
+        return client.getRecommendations(id).results
+    }
+
+    override suspend fun getSimilar(id: Int): List<MovieData> {
+        return client.getSimilar(id).results
     }
 }

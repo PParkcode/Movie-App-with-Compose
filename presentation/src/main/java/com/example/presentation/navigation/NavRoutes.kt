@@ -6,4 +6,5 @@ sealed class NavRoutes(val route: String) {
     object Filter: NavRoutes("filter")
     object Search: NavRoutes("search")
     object MyPage: NavRoutes("myPage")
+    object Detail: NavRoutes("detail")
 }

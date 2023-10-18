@@ -44,6 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import com.example.presentation.detail.SetDetailActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -58,17 +59,26 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(Modifier.fillMaxSize())
+                    //HomeScreen(Modifier.fillMaxSize())
                 }
             }
         }
     }
 }
 
+/**
+ * TODO 인터넷 연결에 대한 에러 처리가 필요하다
+ *
+ */
+
 @Composable
-fun HomeScreen( modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()) {
+fun HomeScreen(
+    navigateToDetail: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: HomeViewModel = hiltViewModel()
+) {
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(key1 = Unit  ) {
+    LaunchedEffect(key1 = Unit) {
         coroutineScope.launch(Dispatchers.IO) {
             viewModel.getPopularMovie()
             viewModel.getNowPlaying()
@@ -84,11 +94,12 @@ fun HomeScreen( modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltVi
             UpScreen(
                 Modifier
                     .fillMaxWidth()
-                    .height(400.dp))
+                    .height(400.dp)
+            )
         }
         item {
             DownScreen(
-                //modifier= Modifier.weight(0.4f,fill = true),
+                navigateToDetail = { navigateToDetail(it) },
                 popularList = viewModel.popularMovieList,
                 nowPlayingList = viewModel.nowPayingMovies,
                 upComingList = viewModel.upComingMovies,
@@ -97,13 +108,16 @@ fun HomeScreen( modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltVi
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun UpScreen(modifier: Modifier = Modifier) {
-    Column(modifier = Modifier
-        .then(modifier)
-        .fillMaxSize()
-        .background(color = Purple80)) {
+    Column(
+        modifier = Modifier
+            .then(modifier)
+            .fillMaxSize()
+            .background(color = Purple80)
+    ) {
         Text(
             "이런 영화들은\n어떤가요",
             style = MaterialTheme.typography.headlineLarge,
@@ -115,36 +129,50 @@ fun UpScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun DownScreen(modifier:Modifier = Modifier ,
-               popularList: List<MovieCover>,
-               nowPlayingList: List<MovieCover>,
-               upComingList:List<MovieCover>,
-               topRatedList:List<MovieCover>
+fun DownScreen(
+    navigateToDetail: (Int) -> Unit,
+    modifier: Modifier = Modifier,
+    popularList: List<MovieCover>,
+    nowPlayingList: List<MovieCover>,
+    upComingList: List<MovieCover>,
+    topRatedList: List<MovieCover>
 ) {
-    MovieList("요즘 핫한 영화",modifier,popularList)
-    MovieList("높은 평점을 받은 작품들",modifier,topRatedList)
-    MovieList("현재 상영하는 작품들",modifier,nowPlayingList)
-    MovieList("개봉 예정 작품들",modifier,upComingList)
+    MovieList({ navigateToDetail(it) }, "요즘 핫한 영화", modifier, popularList)
+    MovieList({ navigateToDetail(it) }, "높은 평점을 받은 작품들", modifier, topRatedList)
+    MovieList({ navigateToDetail(it) }, "현재 상영하는 작품들", modifier, nowPlayingList)
+    MovieList({ navigateToDetail(it) }, "개봉 예정 작품들", modifier, upComingList)
     Spacer(modifier = Modifier.size(100.dp))
 }
+
 @Composable
-fun MovieList(text:String,modifier: Modifier = Modifier, itemList:List<MovieCover>) {
+fun MovieList(
+    navigateToDetail: (Int) -> Unit,
+    text: String,
+    modifier: Modifier = Modifier,
+    itemList: List<MovieCover>
+) {
 
     Column(
         modifier
             .then(modifier)
             .background(Color.White)
             .then(modifier)
-            .padding(start = 10.dp, top = 10.dp)) {
+            .padding(start = 10.dp, top = 10.dp)
+    ) {
         Text(
             text = text,
-            fontSize= 22.sp,
+            fontSize = 17.sp,
             fontWeight = FontWeight.Bold
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)){
+        LazyRow(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
 
-            items(itemList) {movie ->
-                MovieItem(movie.title,movie.posterUrl,modifier.size(width = 120.dp, height = 180.dp))
+            items(itemList) { movie ->
+                MovieItem(
+                    navigateToDetail = { navigateToDetail(it) },
+                    movie.id,
+                    movie.posterUrl,
+                    modifier.size(width = 120.dp, height = 180.dp)
+                )
             }
         }
 
@@ -153,44 +181,43 @@ fun MovieList(text:String,modifier: Modifier = Modifier, itemList:List<MovieCove
 }
 
 
-@Preview(showBackground = true)
 @Composable
-fun MovieItem(title:String = "Sample",
-              url:String = "",
-              modifier: Modifier = Modifier) {
+fun MovieItem(
+    navigateToDetail: (Int) -> Unit,
+    id: Int,
+    url: String,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = Modifier
             .then(modifier)
             .fillMaxSize()
             .padding(top = 5.dp)
-            .clickable { onClickMovie(title, url) },
+            .clickable {
+                navigateToDetail(id)
+            },
         shape = RoundedCornerShape(15.dp),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 5.dp),
+            defaultElevation = 5.dp
+        ),
 
 
-    ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w500"+url,
-            contentDescription = null,
-            Modifier.fillMaxSize()
-        )
+        ) {
+        if(url=="") {
+            Box( contentAlignment = Alignment.Center, modifier = Modifier.size(width = 75.dp, height = 120.dp)){
+
+                Text("No Image", fontSize = 7.sp)
+            }
+        } else {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/original$url",
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+
     }
 
 }
 
-fun onClickMovie(title: String,url: String) {
 
-    Log.d("Main","$title, url is$url ")
-
-
-}
-
-
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun GreetingPreview() {
-    ComposeMovieTheme {
-        HomeScreen()
-    }
-}

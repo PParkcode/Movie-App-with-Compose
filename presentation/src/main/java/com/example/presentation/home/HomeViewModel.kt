@@ -29,7 +29,11 @@ class HomeViewModel @Inject constructor(
     var upComingMovies:MutableList<MovieCover> by mutableStateOf(mutableListOf())
     var topRatedMovies:MutableList<MovieCover> by mutableStateOf(mutableListOf())
     suspend fun getPopularMovie() {
-        popularMovieList =getPopularMovieUseCase.invoke().toMutableList()
+        try{
+            popularMovieList =getPopularMovieUseCase.invoke().toMutableList()
+        } catch (e:Exception) {
+            Log.d("park",e.toString())
+        }
         Log.d("Main",popularMovieList.toString())
     }
 

@@ -1,8 +1,10 @@
 package com.example.data.network
 
 import com.example.data.model.MovieDataList
+import com.example.data.model.MovieDetailResponse
 import com.example.data.model.MovieResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 const val MY_KEY = "78f09933ae6d289319bd8eeccafacf23"
@@ -36,4 +38,19 @@ interface Api {
         @Query("vote_average.gte") stars:String,
         @Query("without_genres") without_genres:String
     ):MovieResponse
+
+    @GET("movie/{id}?language=$LANG&api_key=$MY_KEY")
+    suspend fun getDetailMovieData(
+        @Path("id") id :Int
+    ): MovieDetailResponse
+
+    @GET("movie/{id}/recommendations?language=$LANG&api_key=$MY_KEY")
+    suspend fun getRecommendations(
+        @Path("id") id: Int
+    ):MovieResponse
+
+    @GET("movie/{id}/similar?language=$LANG&api_key=$MY_KEY")
+    suspend fun getSimilar(
+        @Path("id") id:Int
+    ): MovieResponse
 }

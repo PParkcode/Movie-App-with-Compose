@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -81,7 +82,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.times
 import com.example.domain.model.MovieCover
-import com.example.presentation.search.MovieItem
+import com.example.presentation.home.MovieItem
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -100,7 +101,7 @@ class FilterActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    SetFilter()
+                    //SetFilter()
                 }
             }
         }
@@ -110,8 +111,9 @@ class FilterActivity : ComponentActivity() {
 
 // 책 169쪽 흐름 자세히, 책 384쪽
 @Composable
-fun SetFilter(viewModel: FilterViewModel = hiltViewModel()) {
+fun SetFilter(navigateToDetail: (Int) -> Unit, viewModel: FilterViewModel = hiltViewModel()) {
     BackDropScreen(
+        navigateToDetail = navigateToDetail,
         selectedItem = viewModel.selectedChip,
         clickChip = { viewModel.clickChip(it) },
         getFilterMovies = { viewModel.getFilterMovies() },
@@ -124,6 +126,7 @@ fun SetFilter(viewModel: FilterViewModel = hiltViewModel()) {
 
 
 fun BackDropScreen(
+    navigateToDetail: (Int) -> Unit,
     selectedItem: List<ChipState>,
     clickChip: (ChipState) -> Unit,
     getFilterMovies: suspend () -> Unit,
@@ -159,10 +162,10 @@ fun BackDropScreen(
     val hateGenreList = remember { mutableStateListOf<ChipState>() }
 
     for (item in genres) {
-        favoriteGenreList.add(ChipState(item, 1))
-        hateGenreList.add(ChipState(item, 3))
+    favoriteGenreList.add(ChipState(item, 1))
+    hateGenreList.add(ChipState(item, 3))
     }
-     아래와 같이 초기화 하자
+    아래와 같이 초기화 하자
      **/
 
     val favoriteGenreList = remember {
@@ -171,7 +174,7 @@ fun BackDropScreen(
     val hateGenreList = remember {
         genres.map { item -> ChipState(item, 3) }.toMutableStateList()
     }
-    Log.d("park","favorite: ${favoriteGenreList.toList()}")
+    Log.d("park", "favorite: ${favoriteGenreList.toList()}")
 
     ModalBottomSheetLayout(
         sheetContent = {
@@ -188,6 +191,7 @@ fun BackDropScreen(
                     favoriteGenreList = favoriteGenreList,
                     stars = stars,
                     hateGenreList = hateGenreList,
+                    bottomSheetState = bottomSheetState,
                     getFilterMovies = { getFilterMovies() }
                 )
 
@@ -196,6 +200,7 @@ fun BackDropScreen(
         sheetShape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
     ) {
         BackScreen(
+            navigateToDetail = { navigateToDetail(it) },
             scope = scope,
             bottomSheetState = bottomSheetState,
             resultMovies,
@@ -216,6 +221,7 @@ fun BackDropScreen(
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BackScreen(
+    navigateToDetail: (Int) -> Unit,
     scope: CoroutineScope,
     bottomSheetState: ModalBottomSheetState,
     resultMovies: List<MovieCover>,
@@ -248,7 +254,7 @@ fun BackScreen(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(selectedItem) { item ->
-                    BottomChip(chipState = item, modifier = Modifier.padding(end = 8.dp))
+                    BottomChip(chipState = item, onClickChip = {}, modifier = Modifier.padding(end = 8.dp))
                 }
 
             }
@@ -266,28 +272,30 @@ fun BackScreen(
                 }
             }
         }
-        FilterResultArea(movieList = resultMovies)
+        FilterResultArea(navigateToDetail = { navigateToDetail(it) }, movieList = resultMovies)
     }
 
 }
 
 @Composable
-fun FilterResultArea(movieList: List<MovieCover>) {
+fun FilterResultArea(navigateToDetail: (Int) -> Unit, movieList: List<MovieCover>) {
     if (movieList.isEmpty()) {
         //TODO
     } else {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(75.dp),
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            modifier = Modifier.padding(start = 4.dp,end=4.dp, bottom = 40.dp)
         ) {
             items(movieList) { movie ->
-                MovieItem(movie.title, movie.posterUrl)
+                MovieItem({ navigateToDetail(it) }, movie.id, movie.posterUrl)
             }
         }
     }
 }
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun FrontScreen(
     selectedItem: List<ChipState>,
@@ -295,6 +303,7 @@ fun FrontScreen(
     favoriteGenreList: List<ChipState>,
     stars: List<ChipState>,
     hateGenreList: List<ChipState>,
+    bottomSheetState: ModalBottomSheetState,
     getFilterMovies: suspend () -> Unit
 ) {
 
@@ -316,12 +325,14 @@ fun FrontScreen(
                 fontSize = 23.sp,
                 fontWeight = FontWeight.Bold
             )
-            TextButton(onClick = { Log.d("park","selectItem: ${selectedItem.toList()}") }) {
+            TextButton(onClick = { Log.d("park", "selectItem: ${selectedItem.toList()}") }) {
                 Text(
                     text = "X",
                     Modifier
                         .alignByBaseline()
-                        .padding(end = 11.dp), fontSize = 17.sp,
+                        .padding(end = 11.dp)
+                        .clickable {  },
+                    fontSize = 17.sp,
 
                     )
             }
@@ -359,6 +370,7 @@ fun FrontScreen(
         }
         BottomStickyButton(
             selectedItem = selectedItem,
+            bottomSheetState = bottomSheetState,
             onClickChip = { clickChip(it) },
             getFilterMovies = { getFilterMovies() },
             modifier = Modifier.weight(0.2f)
@@ -403,33 +415,36 @@ fun OneCategory(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun BottomStickyButton(
     modifier: Modifier,
     selectedItem: List<ChipState>,
+    bottomSheetState: ModalBottomSheetState,
     onClickChip: (ChipState) -> Unit,
     getFilterMovies: suspend () -> Unit
 ) {
     Log.d("park", "BottomStickyButton 재구성 $selectedItem")
 
     val coroutineScope = rememberCoroutineScope()
-    Column(modifier) {
+    Column(modifier = Modifier.padding(bottom =16.dp)) {
 
 
         LazyRow {
             items(selectedItem) { item ->
-                BottomChip(chipState = item, modifier = Modifier.padding(end = 8.dp))
+                BottomChip(chipState = item, { onClickChip(it) },modifier = Modifier.padding(end = 8.dp))
             }
 
         }
         Row(
         ) {
-            TextButton(onClick = { /*TODO*/ }, Modifier.weight(0.3f)) {
+            TextButton(onClick = { /*TODO*/ }, Modifier.weight(0.3f).padding(bottom = 24.dp)) {
                 Text(text = "초기화")
             }
             Button(onClick = {
                 coroutineScope.launch {
                     getFilterMovies()
+                    bottomSheetState.hide()
                 }
             }, Modifier.weight(0.7f)) {
                 Text("적용", color = Color.White)
@@ -452,26 +467,50 @@ fun Chip(
 
     Log.d("park", "chip: ${chipState.name} 재구성 selected: $selected")
     Log.d("park", "chip 주소: ${chipState}")
-    Box(
-        modifier = Modifier
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
-            .background(if (selected.value) Color.Blue else Color.White)
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .clickable {
-                onClickChip(chipState)
-                selected.value = selectedItem.contains(chipState)
-            }
+    if(chipState.category ==3) {
+        Box(
+            modifier = Modifier
+                .sizeIn(minWidth = 50.dp, minHeight = 25.dp)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(if(selected.value) 2.dp else 1.dp, if(selected.value) Color.Red else Color.Black, RoundedCornerShape(16.dp))
+                .background( Color.White)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .clickable {
+                    onClickChip(chipState)
+                    selected.value = selectedItem.contains(chipState)
+                }
 
 
-    ) {
-        Text(chipState.name, color = if (selected.value) Color.White else Color.Black)
+        ) {
+            Text(chipState.name, fontSize = 9.sp, color = if (selected.value) Color.Red else Color.Black)
+        }
     }
+
+    else {
+        Box(
+            modifier = Modifier
+                .sizeIn(minWidth = 50.dp, minHeight = 25.dp)
+                .padding(8.dp)
+                .clip(RoundedCornerShape(16.dp))
+                .border(if(selected.value) 2.dp else 1.dp, if(selected.value) Color.Blue else Color.Black, RoundedCornerShape(16.dp))
+                .background( Color.White)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+                .clickable {
+                    onClickChip(chipState)
+                    selected.value = selectedItem.contains(chipState)
+                }
+
+
+        ) {
+            Text(chipState.name, fontSize = 9.sp, color = if (selected.value) Color.Blue else Color.Black)
+        }
+    }
+
 }
 
 @Composable
-fun BottomChip(chipState: ChipState, modifier: Modifier) {
+fun BottomChip(chipState: ChipState, onClickChip: (ChipState) -> Unit, modifier: Modifier) {
     Surface(
         color = when {
             chipState.category == 3 -> Color.Red
@@ -488,7 +527,7 @@ fun BottomChip(chipState: ChipState, modifier: Modifier) {
         Row(modifier = Modifier) {
             Text(
                 text = chipState.name,
-                //style = typography.body2,
+                fontSize= 9.sp,
                 modifier = Modifier
                     .padding(8.dp)
             )
@@ -500,7 +539,9 @@ fun BottomChip(chipState: ChipState, modifier: Modifier) {
                     .padding(8.dp)
                     .size(20.dp)
                     .clickable {
-                        chipState.isSelected.value = false
+                        //chipState.isSelected.value = false
+                        onClickChip(chipState)
+                        //selected.value = selectedItem.contains(chipState)
                     },
                 colorFilter = ColorFilter.tint(Color.White)
             )
