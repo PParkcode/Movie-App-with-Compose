@@ -1,9 +1,9 @@
 package com.example.presentation.home
 
-import android.graphics.fonts.FontStyle
+
 import android.os.Bundle
 import android.util.Log
-import android.widget.ImageView
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -19,9 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
@@ -43,10 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import com.example.presentation.detail.SetDetailActivity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class HomeActivity : ComponentActivity() {
@@ -194,6 +189,7 @@ fun MovieItem(
             .fillMaxSize()
             .padding(top = 5.dp)
             .clickable {
+                Log.d("DB테스트",id.toString())
                 navigateToDetail(id)
             },
         shape = RoundedCornerShape(15.dp),
