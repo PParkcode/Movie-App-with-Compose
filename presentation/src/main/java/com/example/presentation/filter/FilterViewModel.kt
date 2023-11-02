@@ -10,8 +10,6 @@ import com.example.domain.model.GenreHash
 import com.example.domain.model.MovieCover
 import com.example.domain.usecase.GetFilterMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,24 +19,6 @@ class FilterViewModel @Inject constructor(
 
     var selectedChip = mutableStateListOf<ChipState>() // 이 방식은 전체를 재구성 중복을 감지 못함
     var filterMovieResult : MutableList<MovieCover> by mutableStateOf(mutableListOf())
-
-    //var selectedChip  by mutableStateOf(mutableListOf<ChipState>()) //이거는 칩 하나만 재구성 대신 중복 감지 가능 -> 이거 사용할거
-
-    //var selectedChip = mutableStateListOf<ChipState>()
-
-    //var selectedChip = MutableStateFlow<MutableList<ChipState>>(mutableListOf())
-    //var selectedChip : MutableList<ChipState> by mutableStateOf(mutableListOf())
-
-    //val selectedChip = mutableStateListOf<ChipState>()
-    //val selectedChip :MutableList<ChipState> by mutableStateOf(mutableListOf())
-
-    /**
-     *  var selectedChip = mutableStateListOf<ChipState>()
-     *  val selectedChip :MutableList<ChipState> by mutableStateOf(mutableListOf())
-     *  위 두 방식 차이 이해할 것.
-     *  위 방식대로 하면 정상 동작
-     *  아래 방식은 selectedItem의 재구성을 하지 않음
-     */
 
     private fun addChip(chip: ChipState) {
         chip.isSelected.value = true

@@ -44,6 +44,7 @@ fun SetMyPageActivity(
     viewModel: MyPageViewModel = hiltViewModel()
 ) {
     val myMovies by viewModel.movieListFlow.collectAsState(initial = emptyList())
+
     MyPageScreen({ navigateToDetail(it) },myMovies = myMovies)
 
 }

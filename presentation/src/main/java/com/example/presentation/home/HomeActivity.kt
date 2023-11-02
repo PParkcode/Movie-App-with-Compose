@@ -54,7 +54,6 @@ class HomeActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    //HomeScreen(Modifier.fillMaxSize())
                 }
             }
         }
@@ -89,7 +88,7 @@ fun HomeScreen(
             UpScreen(
                 Modifier
                     .fillMaxWidth()
-                    .height(400.dp)
+                    .height(200.dp)
             )
         }
         item {
@@ -114,11 +113,11 @@ fun UpScreen(modifier: Modifier = Modifier) {
             .background(color = Purple80)
     ) {
         Text(
-            "이런 영화들은\n어떤가요",
-            style = MaterialTheme.typography.headlineLarge,
+            "이런 영화들은\n어떤가요?",
+            fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
             color = Color.White,
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier.padding(start= 20.dp,top = 30.dp)
         )
     }
 }

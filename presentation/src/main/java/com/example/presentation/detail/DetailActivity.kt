@@ -5,12 +5,10 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +27,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
-import androidx.compose.material.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -38,11 +35,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
-import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -52,7 +49,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -62,6 +58,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.domain.model.MovieCover
@@ -70,9 +67,7 @@ import com.example.presentation.R
 import com.example.presentation.detail.ui.theme.ComposeMovieTheme
 import com.example.presentation.home.MovieItem
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import java.time.format.TextStyle
 
 class DetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,13 +93,16 @@ fun SetDetailActivity(
     viewModel: DetailViewModel = hiltViewModel()
 ) {
 
+    val myMovies by viewModel.myMovies.collectAsState(initial = emptyList())
+    viewModel.isLiked = myMovies.any { it.id == id }
+
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = Unit) {
         coroutineScope.launch {
             viewModel.getDetailMovieData(id)
             viewModel.getRecommendations(id)
             viewModel.getSimilar(id)
-            viewModel.getMyMovies()
+
 
         }
     }
@@ -250,9 +248,6 @@ fun TitleDescriptionArea(movie: MovieDetail, modifier: Modifier) {
             onClickText
         )
 
-
-        //ExpandableText(text = movie.overview, maxLines = 4, )
-
         LazyRow(
             contentPadding = PaddingValues(vertical = 7.dp),
             horizontalArrangement = Arrangement.spacedBy(7.dp)
@@ -322,7 +317,8 @@ fun HeartButton(
     coroutineScope: CoroutineScope
 ) {
 
-    val heartIcon: Painter = if (isLiked) {
+
+    val heartIcon = if (isLiked) {
         painterResource(id = R.drawable.baseline_favorite_24) // 이미 좋아요한 상태에 대한 아이콘
     } else {
         painterResource(id = R.drawable.baseline_favorite_border_24) // 좋아요하지 않은 상태에 대한 아이콘
@@ -338,8 +334,6 @@ fun HeartButton(
                     onClickToInsert()
                 }
             }
-
-
         },
         modifier = Modifier
             .padding(8.dp)
@@ -348,7 +342,7 @@ fun HeartButton(
         Icon(
             painter = heartIcon,
             contentDescription = "찜", // 아이콘의 내용을 나타내는 문자열
-            //tint = if (isLiked) Color.Red else Color.Gray // 좋아요 여부에 따라 색상 변경
+            tint = if (isLiked) Color("#D32F2F".toColorInt()) else Color.Black
         )
 
     }
