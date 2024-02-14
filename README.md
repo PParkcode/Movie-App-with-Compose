@@ -31,6 +31,9 @@
 ### Network
   - Retrofit2
   - Gson
+### Asynchronous
+- Coroutine
+
 ### Imgae Loader
   - Coil
 ### DI
